@@ -1,5 +1,8 @@
-import {useState} from "react"
+import { useState } from "react";
 import words from "./wordList.json";
+import { HangmanDrawing } from "./HangmanDrawing.tsx";
+import { HangmanWord } from "./HangmanWord.tsx";
+import { Keyboard } from "./Keyboard.tsx";
 
 function App() {
   // obtenemos las palabras del listado
@@ -26,9 +29,12 @@ function App() {
         Lose 
         Win
       </div>
+
+      <HangmanDrawing />
+      <HangmanWord />
+      <Keyboard />
+      
   </div>
-)
-
-
-}
+  
+  );}
 export default App;
