@@ -30,12 +30,13 @@ const KEYS = [
 ]
 
 type keyBoardProps = {
+    disabled: boolean
     activeLetters: string[]
     inactiveLetters: string []
     addGuessedLetter: (letter: string) => void
 }
 
-export function Keyboard({activeLetters, inactiveLetters, addGuessedLetter}: keyBoardProps){
+export function Keyboard({activeLetters, inactiveLetters, disabled= false, addGuessedLetter}: keyBoardProps){
     return <div style={{
         display: "grid",
         gridTemplateColumns: "repeat(auto-fit, minmax(75px, 1fr))",
@@ -47,7 +48,7 @@ export function Keyboard({activeLetters, inactiveLetters, addGuessedLetter}: key
             return <button onClick={() => addGuessedLetter} 
             className={`${styles.btn} ${isActive ? styles.active : ""}
             ${isInactive ? styles.inactive : ""}`}
-            disabled
+            disabled={isInactive || isActive || disabled}
             key={key}>
                 {key}
             </button>
