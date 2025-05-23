@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import words from "./wordList.json";
 import { HangmanDrawing } from "./HangmanDrawing.tsx";
 import { HangmanWord } from "./HangmanWord.tsx";
@@ -17,27 +17,40 @@ function App() {
     letter => !wordToGuess.includes(letter)
   )
 
-  function addGuessedLetter(letter: string) {
+  const addGuessedLetter = useCallback((letter: string) => {
     if(guessedLetters.includes(letter)) return
 
     setGuessedLetters(currentletter => [...currentletter, letter])
-  }
+  }, [guessedLetters])
+  // Funcion no necesaria
+  // function addGuessedLetter(letter: string) {
+  //   if(guessedLetters.includes(letter)) return
 
-  useEffect(() => {
-    const handle = (e: KeyboardEvent) {
-      const key = e.key
-      if (!key.match(/^[az]$/)) return
+  //   setGuessedLetters(currentletter => [...currentletter, letter])
+  // }
 
-      e.preventDefault()
-      addGuessedLetter(key)
-    }
+useEffect(() => {
+  // Definición de la función manejadora de eventos
+  const handle = (e: KeyboardEvent) => {
+    const key = e.key;
+    // Verifica si la tecla presionada es una letra entre 'a' y 'z'
+    if (!key.match(/^[a-z]$/)) return;
 
-    document.addEventListener("keypress", handle)
+    // Evita el comportamiento por defecto del evento
+    e.preventDefault();
+    // Llama a la función addGuessedLetter con la tecla presionada
+    addGuessedLetter(key);
+  };
 
-    return () => {
-      document.removeEventListener("keypress", handle)
-    }
-  })
+  // Añade el manejador de eventos al documento
+  document.addEventListener("keypress", handle);
+
+  // Función de limpieza que se ejecuta al desmontar el componente
+  return () => {
+    // Elimina el manejador de eventos del documento
+    document.removeEventListener("keypress", handle);
+  };
+}, [guessedLetters]); // Arreglo de dependencias vacío
 
   return (
   <div 
@@ -60,7 +73,12 @@ function App() {
       <HangmanDrawing numberOfGuesses = {incorrectLetters.length} />
       <HangmanWord guessedLetters={guessedLetters} wordToGuess={wordToGuess} />
       <div style={{alignSelf: "stretch"}}>
-        <Keyboard />
+        <Keyboard 
+        activeLetters={guessedLetters.filter(letter => wordToGuess.includes(letter))}
+
+        inactiveLetters = {incorrectLetters}
+        addGuessedLetter={addGuessedLetter}
+        />
       </div>
       
       
